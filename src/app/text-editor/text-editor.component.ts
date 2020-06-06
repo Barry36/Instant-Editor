@@ -24,9 +24,9 @@ export class TextEditorComponent implements OnInit {
 
   private postsCol: AngularFirestoreCollection<Post>;
   post_tmp: Observable<PostId[]>;
-  
-  private filteredPosts: Observable<PostId[]>;
   displayContent: string;
+  
+  private filteredPosts: Observable<PostId[]>
   private latestPost: PostId;
 
   constructor(private afs: AngularFirestore, private auth: AuthService) 
@@ -82,8 +82,6 @@ export class TextEditorComponent implements OnInit {
     this.latestPost = post;
     this.displayContent = this.latestPost.content;
   }
-
-
 
 
   updatePost():void{
