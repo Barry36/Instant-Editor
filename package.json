@@ -19,6 +19,10 @@
     "@angular/platform-browser": "~9.1.9",
     "@angular/platform-browser-dynamic": "~9.1.9",
     "@angular/router": "~9.1.9",
+    "angular-medium-editor": "^4.0.0-alpha",
+    "angularfire2": "^5.4.2",
+    "firebase": "^7.14.6",
+    "medium-editor": "^5.23.3",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
