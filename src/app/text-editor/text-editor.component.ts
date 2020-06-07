@@ -28,16 +28,19 @@ export class TextEditorComponent implements OnInit {
   
   private filteredPosts: Observable<PostId[]>
   private latestPost: PostId;
+  private uid: string;
 
   constructor(private afs: AngularFirestore, private auth: AuthService) 
     {
-      console.log("constructor called");
       this.user$ = auth.user$;
-      this.user$.subscribe(data =>{
+      this.user$.subscribe(data =>
+      {
+        
         // Get a list of posts that the currUser posted
         this.filteredPosts = this.post_tmp.pipe(
           map(a => {
             return a.filter(post =>{
+              this.uid = data.uid;
               return (post.uid === data.uid);
             })
           })
@@ -56,7 +59,12 @@ export class TextEditorComponent implements OnInit {
           })
         )
         .subscribe(e =>{
-          this.setLatestPost(e[0]);
+          if(e.length > 0){
+            // add posts for user first login
+            this.setLatestPost(e[0]);
+          }else{
+            this.addPost();
+          }
         })
         
       });
@@ -75,9 +83,22 @@ export class TextEditorComponent implements OnInit {
   
 
   ngOnInit(): void { 
-    console.log("onInit");
+    
   }  
 
+  addPost(): void {
+    console.log("addPost() is called");
+    this.auth.user$.subscribe(userData => {
+      console.log("userData.uid is: " + userData.uid);
+      console.log("this.displayContent is: " + this.displayContent);
+      this.afs.collection('posts').add({
+        'uid': userData.uid,
+        'content': this.displayContent,
+        'time_created': firestore.Timestamp.now()
+      });
+    })
+    
+  }
   setLatestPost(post:PostId):void{
     this.latestPost = post;
     this.displayContent = this.latestPost.content;
@@ -85,15 +106,24 @@ export class TextEditorComponent implements OnInit {
 
 
   updatePost():void{
-    console.log("updatePost is called!");
-    console.log("postID is: " + this.latestPost.id)
-    console.log("Post Content is: " + this.displayContent);
+    // console.log("updatePost is called!");
+    // console.log("postID is: " + this.latestPost.id)
+    // console.log("Post Content is: " + this.displayContent);
+    console.log(this.latestPost);
+    if(!this.latestPost){
+      console.log("New post created!");
+      this.addPost();
+    }else{
+      console.log("Post updated!");
+      let data = {
+        uid: this.uid,
+        content: this.displayContent,
+        time_created: firestore.Timestamp.now()
+      };
+      this.afs.collection('posts').doc(this.latestPost.id).set(data, {merge: true})
+    }
     
-    let data = {
-      content: this.displayContent,
-      time_created: firestore.Timestamp.now()
-    };
-    this.afs.collection('posts').doc(this.latestPost.id).set(data, {merge: true})
   }
+
 
 }
