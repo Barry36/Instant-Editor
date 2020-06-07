@@ -125,6 +125,8 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
           updateOnEmptySelection: false
       }
     });
+    // var doc = new DOMParser().parseFromString(this.displayContent, "text/xml");
+    
     document.getElementById('text-editor-div').focus();
   }  
 
@@ -144,6 +146,7 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
   setLatestPost(post:PostId):void{
     this.latestPost = post;
     this.displayContent = this.latestPost.content;
+    document.getElementById('text-editor-div').innerHTML = this.displayContent;
   }
 
 
@@ -164,7 +167,7 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
   }
 
   updateModel(value): void{
-    this.displayContent = value;
+    this.displayContent = document.getElementById('text-editor-div').innerHTML;    
     this.updatePost();
   }
 
