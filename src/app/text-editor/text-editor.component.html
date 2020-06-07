@@ -1,3 +1,12 @@
-<input type="text" [(ngModel)]="displayContent" name="content" placeholder="Content.." (keyup)="updatePost()">
+<!-- <input type="text" [(ngModel)]="displayContent" name="content" placeholder="Content.." (keyup)="updatePost()"> -->
 <div class="editable"></div>
-<script>var editor = new MediumEditor('.editable');</script>
+
+<div class="container mt-3 ">
+    <div class="row justify-content-center">
+            <div #editable class=' col-6' style="min-height: 85vh" id="text-editor-div" 
+                (input)="updateModel(editable.innerText)">
+                {{ displayContent }}
+            </div>
+    </div>
+
+</div>

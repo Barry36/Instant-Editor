@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { Post } from '../services/post.model';
 
 
 export interface PostId extends Post { id: string; }
+declare var MediumEditor:any;
 
 @Component({
   selector: 'app-text-editor',
@@ -18,7 +19,7 @@ export interface PostId extends Post { id: string; }
 })
 
 
-export class TextEditorComponent implements OnInit {
+export class TextEditorComponent implements OnInit, AfterViewInit {
   user$: Observable<User>;
   posts: Observable<Post[]>;
 
@@ -29,6 +30,16 @@ export class TextEditorComponent implements OnInit {
   private filteredPosts: Observable<PostId[]>
   private latestPost: PostId;
   private uid: string;
+
+  editor:any;
+  
+  @ViewChild('editable',{
+      static:true
+    }) editable:ElementRef;
+
+    ngAfterViewInit(): void {
+      
+    }
 
   constructor(private afs: AngularFirestore, private auth: AuthService) 
     {
@@ -67,6 +78,7 @@ export class TextEditorComponent implements OnInit {
           }
         })
         
+        
       });
       
       this.postsCol =  this.afs.collection<Post>('posts');
@@ -79,11 +91,41 @@ export class TextEditorComponent implements OnInit {
           });
         })
       )
+    
   }
   
 
   ngOnInit(): void { 
-    
+    this.editor = new MediumEditor(this.editable.nativeElement,{
+      paste: {
+        /* This example includes the default options for paste,
+           if nothing is passed this is what it used */
+        forcePlainText: false,
+        cleanPastedHTML: true,
+        cleanReplacements: [],
+        cleanAttrs: ['class', 'style', 'dir','name'],
+        cleanTags: ['meta'],
+        unwrapTags: []
+    },
+      toolbar: {
+          /* These are the default options for the toolbar,
+             if nothing is passed this is what is used */
+          allowMultiParagraphSelection: true,
+          buttons: BUTTONS,
+          diffLeft: 0,
+          diffTop: -10,
+          firstButtonClass: 'medium-editor-button-first',
+          lastButtonClass: 'medium-editor-button-last',
+          relativeContainer: null,
+          standardizeSelectionStart: false,
+          static: false,
+          /* options which only apply when static is true */
+          align: 'center',
+          sticky: false,
+          updateOnEmptySelection: false
+      }
+    });
+    document.getElementById('text-editor-div').focus();
   }  
 
   addPost(): void {
@@ -106,9 +148,6 @@ export class TextEditorComponent implements OnInit {
 
 
   updatePost():void{
-    // console.log("updatePost is called!");
-    // console.log("postID is: " + this.latestPost.id)
-    // console.log("Post Content is: " + this.displayContent);
     console.log(this.latestPost);
     if(!this.latestPost){
       console.log("New post created!");
@@ -122,8 +161,39 @@ export class TextEditorComponent implements OnInit {
       };
       this.afs.collection('posts').doc(this.latestPost.id).set(data, {merge: true})
     }
-    
+  }
+
+  updateModel(value): void{
+    this.displayContent = value;
+    this.updatePost();
   }
 
 
 }
+
+
+const BUTTONS = [
+  'bold'
+  ,'italic'
+  ,'underline'
+  
+  ,'subscript'
+  ,'superscript'
+  ,'anchor'
+  ,'quote'
+  ,'pre'
+  ,'orderedlist'
+  ,'unorderedlist'
+  ,'indent' 
+  ,'justifyLeft'
+  ,'justifyCenter'
+  ,'justifyRight'
+  ,'justifyFull'
+  ,'h1'
+  ,'h2'
+  ,'h3'
+  ,'h4'
+  ,'h5'
+  ,'h6'
+  
+  ]

@@ -1,15 +1,8 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { MediumEditor } from 'medium-editor';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
-import { AngularFireDatabase, AngularFireList, AngularFireObject } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
 
-
-
-
-import { Observable } from 'rxjs';
-
-import { map } from 'rxjs/operators';
 
 
 
