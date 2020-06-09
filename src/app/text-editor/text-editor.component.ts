@@ -77,13 +77,9 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
 
             // set display and focus here
             document.getElementById('text-editor-div').innerHTML = this.displayContent;
-            console.log("ypp");
-            console.log($('#text-editor-div'));
             
             var ctl = <any>document.getElementById('text-editor-div');
             var startPos = ctl.selectionStart;
-            var endPos = ctl.selectionEnd;
-            console.log('Start position is: '+startPos);
             placeCaretAtEnd($('#text-editor-div').get(startPos));
           }else{
             this.addPost();
@@ -135,18 +131,21 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
           align: 'center',
           sticky: false,
           updateOnEmptySelection: false
+      },
+      placeholder: {
+        /* This example includes the default options for placeholder,
+           if nothing is passed this is what it used */
+        text: 'Type your Content here...',
+        hideOnClick: true
       }
-    });
-    console.log("Focus called");
-    console.log($('#text-editor-div'));
-    $('#text-editor-div').focus();
+    }); 
+
+    document.getElementById('text-editor-div').innerHTML = this.displayContent;
+
   }  
 
   addPost(): void {
-    console.log("addPost() is called");
     this.auth.user$.subscribe(userData => {
-      console.log("userData.uid is: " + userData.uid);
-      console.log("this.displayContent is: " + this.displayContent);
       this.afs.collection('posts').add({
         'uid': userData.uid,
         'content': this.displayContent,
@@ -157,18 +156,12 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
   }
 
   setLatestPost(post:PostId):void{
-    console.log("I am called");
     this.latestPost = post;
     this.displayContent = this.latestPost.content;
-    // var e = document.getElementById('text-editor-div').innerHTML.toString
-    console.log(this.displayContent);
-    // placeCaretAtEnd();
-    // document.getElementById('text-editor-div').innerHTML = "Test";
   }
 
 
   updatePost():void{
-    console.log(this.latestPost);
     if(!this.latestPost){
       console.log("New post created!");
       this.addPost();
@@ -184,12 +177,24 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
   }
 
   updateModel(value): void{
-    this.displayContent = document.getElementById('text-editor-div').innerHTML;    
+    this.displayContent = document.getElementById('text-editor-div').innerHTML;  
+    this.convertLaTex();
     this.updatePost();
   }
 
+ convertLaTex(){
+   var res = this.displayContent.replace (/(\${1,2})((?:\\.|[\s\S])*)\1/g, (m, tag, src) => {
+    // m is the entire match
+    // tag is '$' or '$$' 
+    // src is the internal text
+  
+    return src;
+  });
+  this.displayContent = res;
+}
 
 }
+
 
 function placeCaretAtEnd(el) {
   el.focus();
@@ -209,7 +214,6 @@ function placeCaretAtEnd(el) {
       textRange.select();
   }
 }
-
 
 const BUTTONS = [
   'bold'

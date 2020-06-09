@@ -1,13 +1,19 @@
 <br>
+<h2 style="text-align: center;">Focus on the Blank below to start typing your text</h2>
 <br>
+<p style="margin-left: 10%; text-align: center;">I have not completely finished the <b>bouns</b> for this coding challenge, but you can refresh the page to see LaTex expressions have been parsed</p>
 <div class="editable"></div>
 
 <div class="container mt-3 ">
     <div class="row justify-content-center">
-            <div #editable class=' col-6' style="min-height: 85vh" id="text-editor-div" 
+            <div #editable class=' col-6' style="min-height: 85vh; margin: 5%; margin-right: 10%;border: solid;border-width: 1px;" id="text-editor-div" 
                 (input)="updateModel(editable.innerHTML)">
-                
             </div>
     </div>
+</div>
 
+<br>
+<div style="margin-right: 10%; margin: auto;">
+    <b>Preview the content currently stored in database:</b>
+    <div>{{ displayContent }}</div>
 </div>

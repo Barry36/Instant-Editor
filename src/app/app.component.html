@@ -1,15 +1,17 @@
-<div *ngIf="auth.user$ | async as user; else login">
+<div *ngIf="auth.user$ | async as user; else login" style="text-align: center;">
 
 <app-text-editor></app-text-editor>
 
 
   <hr>
-  <button class="button" (click)="auth.signOut()">Sign Out</button>
+  
+    <button class="button" (click)="auth.signOut()">Sign Out</button>
 
 </div>
 
 <ng-template #login>
-  <button class="button" (click)="auth.googleSignin()">Login with Google</button>
+  <h1 style="margin-top: 10%;">Welcome to the Dashboard, try login and start typing!</h1>
+  <button class="button" (click)="auth.googleSignin()" style="background-color: lightblue;top: 50%; margin-top: 10%;">Login with Google</button>
 </ng-template>
 
 <router-outlet></router-outlet>
