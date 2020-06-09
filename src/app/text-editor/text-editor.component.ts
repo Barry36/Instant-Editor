@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service'
 import { firestore } from 'firebase';
 import { User } from '../services/user.model';
 import { Post } from '../services/post.model';
+import * as $ from 'jquery';
 
 
 
@@ -73,6 +74,17 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
           if(e.length > 0){
             // add posts for user first login
             this.setLatestPost(e[0]);
+
+            // set display and focus here
+            document.getElementById('text-editor-div').innerHTML = this.displayContent;
+            console.log("ypp");
+            console.log($('#text-editor-div'));
+            
+            var ctl = <any>document.getElementById('text-editor-div');
+            var startPos = ctl.selectionStart;
+            var endPos = ctl.selectionEnd;
+            console.log('Start position is: '+startPos);
+            placeCaretAtEnd($('#text-editor-div').get(startPos));
           }else{
             this.addPost();
           }
@@ -113,7 +125,7 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
           allowMultiParagraphSelection: true,
           buttons: BUTTONS,
           diffLeft: 0,
-          diffTop: -10,
+          diffTop: 0,
           firstButtonClass: 'medium-editor-button-first',
           lastButtonClass: 'medium-editor-button-last',
           relativeContainer: null,
@@ -125,9 +137,9 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
           updateOnEmptySelection: false
       }
     });
-    // var doc = new DOMParser().parseFromString(this.displayContent, "text/xml");
-    
-    document.getElementById('text-editor-div').focus();
+    console.log("Focus called");
+    console.log($('#text-editor-div'));
+    $('#text-editor-div').focus();
   }  
 
   addPost(): void {
@@ -143,10 +155,15 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
     })
     
   }
+
   setLatestPost(post:PostId):void{
+    console.log("I am called");
     this.latestPost = post;
     this.displayContent = this.latestPost.content;
-    document.getElementById('text-editor-div').innerHTML = this.displayContent;
+    // var e = document.getElementById('text-editor-div').innerHTML.toString
+    console.log(this.displayContent);
+    // placeCaretAtEnd();
+    // document.getElementById('text-editor-div').innerHTML = "Test";
   }
 
 
@@ -162,7 +179,7 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
         content: this.displayContent,
         time_created: firestore.Timestamp.now()
       };
-      this.afs.collection('posts').doc(this.latestPost.id).set(data, {merge: true})
+      this.afs.collection('posts').doc(this.latestPost.id).set(data, {merge: true});
     }
   }
 
@@ -172,6 +189,25 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
   }
 
 
+}
+
+function placeCaretAtEnd(el) {
+  el.focus();
+  var e = <any>document.body;
+  if (typeof window.getSelection != "undefined"
+          && typeof document.createRange != "undefined") {
+      var range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+  } else if (typeof e.createTextRange != "undefined") {
+      var textRange = e.createTextRange();
+      textRange.moveToElementText(el);
+      textRange.collapse(false);
+      textRange.select();
+  }
 }
 
 
