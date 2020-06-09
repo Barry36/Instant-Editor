@@ -140,8 +140,9 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
         hideOnClick: true
       }
     }); 
-
-    document.getElementById('text-editor-div').innerHTML = this.displayContent;
+    if(this.latestPost){
+      document.getElementById('text-editor-div').innerHTML = this.displayContent;
+    }
 
   }  
 
