@@ -31,7 +31,7 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
   private filteredPosts: Observable<PostId[]>
   private latestPost: PostId;
   private uid: string;
-
+  username: string;
   editor:any;
   
   @ViewChild('editable',{
@@ -53,6 +53,7 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
           map(a => {
             return a.filter(post =>{
               this.uid = data.uid;
+              this.username = data.displayName;
               return (post.uid === data.uid);
             })
           })
