@@ -26,7 +26,7 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
 
   private postsCol: AngularFirestoreCollection<Post>;
   post_tmp: Observable<PostId[]>;
-  displayContent: string;
+  displayContent: string = '';
   
   private filteredPosts: Observable<PostId[]>
   private latestPost: PostId;
@@ -184,11 +184,22 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
   }
 
  convertLaTex(){
+   var re = /(\${1,2})((?:\\.|[\s\S])*)\1/g;
+   var match = re.exec(this.displayContent);
+   var start:number, end:number;
+   if(match){
+    start = match.index;
+    end = re.lastIndex;
+   }
    var res = this.displayContent.replace (/(\${1,2})((?:\\.|[\s\S])*)\1/g, (m, tag, src) => {
     // m is the entire match
     // tag is '$' or '$$' 
     // src is the internal text
-  
+
+    document.getElementById('text-editor-div').innerHTML
+      = this.displayContent.substring(0,start) 
+        + this.displayContent.substring(start+1,end-1)
+        + this.displayContent.substring(end,this.displayContent.length);
     return src;
   });
   this.displayContent = res;
@@ -214,7 +225,10 @@ function placeCaretAtEnd(el) {
       textRange.collapse(false);
       textRange.select();
   }
+  
 }
+
+
 
 const BUTTONS = [
   'bold'
