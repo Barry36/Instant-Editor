@@ -2,8 +2,11 @@
 This project was developed and deployed by Barry. This project was developed using Angular 9 with Firebase @version - 8.4.2 
 ## project Description
 This project enables Google Sign-in and allows user to write post using Medium Editor (https://github.com/yabwe/medium-editor), and the changes will be updated automatically to the real-time Firebase database without clicking any buttons. When the user logs back in, retrieve their last written and auto-saved document and show it in the editor ready for editing.
-### LaTex Suppor: 
+### LaTex Support: 
 The application also allows the user to enter LaTeX equations into the editor inside 2 enclosing $ symbols (e.g. $1+1=2$) and once the user is done typing them out, render the actual equation.
+
+### Security Enhancement:
+The security enhancement (such as CSRF, XSS, SQL injection) was not implemented given this is a prototype application with minimal security risk.
 
 # SimpleApp
 
